@@ -1,26 +1,9 @@
-                   .:                     :,                                          
-,:::::::: ::`      :::                   :::                                          
-,:::::::: ::`      :::                   :::                                          
-.,,:::,,, ::`.:,   ... .. .:,     .:. ..`... ..`   ..   .:,    .. ::  .::,     .:,`   
-   ,::    :::::::  ::, :::::::  `:::::::.,:: :::  ::: .::::::  ::::: ::::::  .::::::  
-   ,::    :::::::: ::, :::::::: ::::::::.,:: :::  ::: :::,:::, ::::: ::::::, :::::::: 
-   ,::    :::  ::: ::, :::  :::`::.  :::.,::  ::,`::`:::   ::: :::  `::,`   :::   ::: 
-   ,::    ::.  ::: ::, ::`  :::.::    ::.,::  :::::: ::::::::: ::`   :::::: ::::::::: 
-   ,::    ::.  ::: ::, ::`  :::.::    ::.,::  .::::: ::::::::: ::`    ::::::::::::::: 
-   ,::    ::.  ::: ::, ::`  ::: ::: `:::.,::   ::::  :::`  ,,, ::`  .::  :::.::.  ,,, 
-   ,::    ::.  ::: ::, ::`  ::: ::::::::.,::   ::::   :::::::` ::`   ::::::: :::::::. 
-   ,::    ::.  ::: ::, ::`  :::  :::::::`,::    ::.    :::::`  ::`   ::::::   :::::.  
-                                ::,  ,::                               ``             
-                                ::::::::                                              
-                                 ::::::                                               
-                                  `,,`
+# Getriebe Bibliothek für OpenSCAD / Gears Library for OpenSCAD
+<http://www.thingiverse.com/thing:1604369>
+by janssen86 is licensed under the [Creative Commons - Attribution - Non-Commercial - Share Alike](http://creativecommons.org/licenses/by-nc-sa/3.0/) license.
 
-
-http://www.thingiverse.com/thing:1604369
-Getriebe Bibliothek für OpenSCAD / Gears Library for OpenSCAD by janssen86 is licensed under the Creative Commons - Attribution - Non-Commercial - Share Alike license.
-http://creativecommons.org/licenses/by-nc-sa/3.0/
-
-# Summary
+## Summary
+[by janssen86]
 
 <h3>OpenSCAD Bibliothek für Evolventen-Zahnräder, Schnecken und Zahnstangen
 </h3>
