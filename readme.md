@@ -3,8 +3,9 @@ Gears Library for OpenSCAD
 
 
 ## Differences in Poikilos' fork
-- The English branch only has English, so finding information is easier for English-speaking users.
+- The English branch is now the default branch. It only has English, so finding information is easier for English-speaking users.
   - To reduce work, parameter names will be based on [openscad gears (english)](https://www.thingiverse.com/thing:2123204) by [benengel](https://www.thingiverse.com/benengel) February 20, 2017 ([Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0))
+  - To keep track of upstream changes (such as by viewing commit diffs), the new upstream-janssen86 branch will always match janssen86's version.
 - Features and fixes from [Erhannis's fork](https://github.com/Erhannis/getriebe) are included.
 
 
