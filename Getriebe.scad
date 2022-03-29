@@ -19,7 +19,7 @@ Enthält die Module
 
 Beispiele für jedes Modul befinden sich auskommentiert am Ende dieser Datei
 
-Autor:		Dr Jörg Janssen
+Autor:		2018 Dr Jörg Janssen, 2019 Erhannis
 Stand:		29. Oktober 2018
 Version:	2.3
 Lizenz:		Creative Commons - Attribution, Non Commercial, Share Alike
@@ -49,7 +49,7 @@ function radian(eingriffswinkel) = eingriffswinkel/rad;
 /*	Wandelt 2D-Polarkoordinaten in kartesische um
     Format: radius, phi; phi = Winkel zur x-Achse auf xy-Ebene */
 function pol_zu_kart(polvect) = [
-	polvect[0]*cos(polvect[1]),  
+	polvect[0]*cos(polvect[1]),
 	polvect[0]*sin(polvect[1])
 ];
 
@@ -71,7 +71,7 @@ function kugelev(theta0,theta) = 1/sin(theta0)*acos(cos(theta)/cos(theta0))-acos
 /*  Wandelt Kugelkoordinaten in kartesische um
     Format: radius, theta, phi; theta = Winkel zu z-Achse, phi = Winkel zur x-Achse auf xy-Ebene */
 function kugel_zu_kart(vect) = [
-	vect[0]*sin(vect[1])*cos(vect[2]),  
+	vect[0]*sin(vect[1])*cos(vect[2]),
 	vect[0]*sin(vect[1])*sin(vect[2]),
 	vect[0]*cos(vect[1])
 ];
@@ -85,12 +85,12 @@ function istgerade(zahl) =
 /*	größter gemeinsamer Teiler
 	nach Euklidischem Algorithmus.
 	Sortierung: a muss größer als b sein */
-function ggt(a,b) = 
+function ggt(a,b) =
 	a%b == 0 ? b : ggt(b,a%b);
 
 /*	Polarfunktion mit polarwinkel und zwei variablen */
 function spirale(a, r0, phi) =
-	a*phi + r0; 
+	a*phi + r0;
 
 /*	Kopiert und dreht einen Körper */
 module kopiere(vect, zahl, abstand, winkel){
@@ -122,7 +122,7 @@ module zahnstange(modul, laenge, hoehe, breite, eingriffswinkel = 20, schraegung
     b = pi*mx/2-2*mx*tan(eingriffswinkel);						// Kopfbreite
     x = breite*tan(schraegungswinkel);							// Verschiebung der Oberseite in x-Richtung durch Schrägungswinkel
     nz = ceil((laenge+abs(2*x))/(pi*mx));						// Anzahl der Zähne
-    
+
     if (delta == undef) {
         if (weird_offset) {
             zahnstange(modul, laenge, hoehe, breite, eingriffswinkel, schraegungswinkel, weird_offset, delta=[-pi*mx*(nz-1)/2-a-b/2,-modul0,0]);
@@ -150,9 +150,9 @@ module zahnstange(modul, laenge, hoehe, breite, eingriffswinkel = 20, schraegung
                 };
                 translate([abs(x),-hoehe+modul0-0.5,-0.5]){
                     cube([laenge,hoehe+modul0+1,breite+1]);			// Quader, der das Volumen der Zahnstange umfasst
-                }	
+                }
             };
-        };	
+        };
     }
 }
 
@@ -166,7 +166,7 @@ module zahnstange(modul, laenge, hoehe, breite, eingriffswinkel = 20, schraegung
 	optimiert = Löcher zur Material-/Gewichtsersparnis bzw. Oberflächenvergößerung erzeugen, wenn Geometrie erlaubt */
 module stirnrad(modul, zahnzahl, breite, bohrung, eingriffswinkel = 20, schraegungswinkel = 0, optimiert = true) {
 
-	// Dimensions-Berechnungen	
+	// Dimensions-Berechnungen
 	d = modul * zahnzahl;											// Teilkreisdurchmesser
 	r = d / 2;														// Teilkreisradius
 	alpha_stirn = atan(tan(eingriffswinkel)/cos(schraegungswinkel));// Schrägungswinkel im Stirnschnitt
@@ -185,11 +185,11 @@ module stirnrad(modul, zahnzahl, breite, bohrung, eingriffswinkel = 20, schraegu
 	gamma = rad*breite/(r*tan(90-schraegungswinkel));				// Torsionswinkel für Extrusion
 	schritt = rho_ra/16;											// Evolvente wird in 16 Stücke geteilt
 	tau = 360/zahnzahl;												// Teilungswinkel
-	
+
 	r_loch = (2*rf - bohrung)/8;									// Radius der Löcher für Material-/Gewichtsersparnis
 	rm = bohrung/2+2*r_loch;										// Abstand der Achsen der Löcher von der Hauptachse
 	z_loch = floor(2*pi*rm/(3*r_loch));								// Anzahl der Löcher für Material-/Gewichtsersparnis
-	
+
 	optimiert = (optimiert && r >= breite*1.5 && d > 2*bohrung);	// ist Optimierung sinnvoll?
 
 	// Zeichnung
@@ -201,7 +201,7 @@ module stirnrad(modul, zahnzahl, breite, bohrung, eingriffswinkel = 20, schraegu
 				difference(){
 					union(){
 						zahnbreite = (180*(1-spiel))/zahnzahl+2*phi_r;
-						circle(rf);										// Fußkreis	
+						circle(rf);										// Fußkreis
 						for (rot = [0:tau:360]){
 							rotate (rot){								// "Zahnzahl-mal" kopieren und drehen
 								polygon(concat(							// Zahn
@@ -222,7 +222,7 @@ module stirnrad(modul, zahnzahl, breite, bohrung, eingriffswinkel = 20, schraegu
 								);
 							}
 						}
-					}			
+					}
 					circle(r = rm+r_loch*1.49);							// "Bohrung"
 				}
 			}
@@ -293,7 +293,7 @@ module pfeilrad(modul, zahnzahl, breite, bohrung, eingriffswinkel = 20, schraegu
 	r_loch = (2*rf - bohrung)/8;									// Radius der Löcher für Material-/Gewichtsersparnis
 	rm = bohrung/2+2*r_loch;										// Abstand der Achsen der Löcher von der Hauptachse
 	z_loch = floor(2*pi*rm/(3*r_loch));								// Anzahl der Löcher für Material-/Gewichtsersparnis
-	
+
 	optimiert = (optimiert && r >= breite*3 && d > 2*bohrung);		// ist Optimierung sinnvoll?
 
 	translate([0,0,breite]){
@@ -365,7 +365,7 @@ module zahnstange_und_rad (modul, laenge_stange, zahnzahl_rad, hoehe_stange, boh
     schraegungswinkel = Schrägungswinkel zur Rotationsachse, Standardwert = 0° (Geradverzahnung) */
 module hohlrad(modul, zahnzahl, breite, randbreite, eingriffswinkel = 20, schraegungswinkel = 0) {
 
-	// Dimensions-Berechnungen	
+	// Dimensions-Berechnungen
 	ha = (zahnzahl >= 20) ? 0.02 * atan((zahnzahl/15)/pi) : 0.6;	// Verkürzungsfaktor Zahnkopfhöhe
 	d = modul * zahnzahl;											// Teilkreisdurchmesser
 	r = d / 2;														// Teilkreisradius
@@ -394,7 +394,7 @@ module hohlrad(modul, zahnzahl, breite, randbreite, eingriffswinkel = 20, schrae
 			circle(r = ra + randbreite);							// Außenkreis
 			union(){
 				zahnbreite = (180*(1+spiel))/zahnzahl+2*phi_r;
-				circle(rf);											// Fußkreis	
+				circle(rf);											// Fußkreis
 				for (rot = [0:tau:360]){
 					rotate (rot) {									// "Zahnzahl-mal" kopieren und drehen
 						polygon( concat(
@@ -417,7 +417,7 @@ module hohlrad(modul, zahnzahl, breite, randbreite, eingriffswinkel = 20, schrae
 	}
 
 	echo("Außendurchmesser Hohlrad = ", 2*(ra + randbreite));
-	
+
 }
 
 /*
@@ -465,7 +465,7 @@ module pfeilhohlrad(modul, zahnzahl, breite, randbreite, eingriffswinkel = 20, s
     bohrung = Durchmesser der Mittelbohrung
     eingriffswinkel = Eingriffswinkel, Standardwert = 20° gemäß DIN 867. Sollte nicht größer als 45° sein.
     schraegungswinkel = Schrägungswinkel zur Rotationsachse, Standardwert = 0° (Geradverzahnung)
-	zusammen_gebaut = 
+	zusammen_gebaut =
 	optimiert = Löcher zur Material-/Gewichtsersparnis bzw. Oberflächenvergößerung erzeugen, wenn Geometrie erlaubt
 	zusammen_gebaut = Komponenten zusammengebaut für Konstruktion oder auseinander zum 3D-Druck	*/
 module planetengetriebe(modul, zahnzahl_sonne, zahnzahl_planet, anzahl_planeten, breite, randbreite, bohrung, eingriffswinkel=20, schraegungswinkel=0, zusammen_gebaut=true, optimiert=true){
@@ -478,7 +478,7 @@ module planetengetriebe(modul, zahnzahl_sonne, zahnzahl_planet, anzahl_planeten,
     d_hohlrad = modul*zahnzahl_hohlrad;									// Teilkreisdurchmesser Hohlrad
 
 	drehen = istgerade(zahnzahl_planet);								// Muss das Sonnenrad gedreht werden?
-		
+
 	n_max = floor(180/asin(modul*(zahnzahl_planet)/(modul*(zahnzahl_sonne +  zahnzahl_planet))));
 																		// Anzahl Planetenräder: höchstens so viele, wie ohne
 																		// Überlappung möglich
@@ -533,12 +533,12 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 	// Dimensions-Berechnungen
 	d_aussen = modul * zahnzahl;									// Teilkegeldurchmesser auf der Kegelgrundfläche,
 																	// entspricht der Sehne im Kugelschnitt
-	r_aussen = d_aussen / 2;										// Teilkegelradius auf der Kegelgrundfläche 
+	r_aussen = d_aussen / 2;										// Teilkegelradius auf der Kegelgrundfläche
 	rg_aussen = r_aussen/sin(teilkegelwinkel);						// Großkegelradius für Zahn-Außenseite, entspricht der Länge der Kegelflanke;
-	rg_innen = rg_aussen - zahnbreite;								// Großkegelradius für Zahn-Innenseite	
+	rg_innen = rg_aussen - zahnbreite;								// Großkegelradius für Zahn-Innenseite
 	r_innen = r_aussen*rg_innen/rg_aussen;
 	alpha_stirn = atan(tan(eingriffswinkel)/cos(schraegungswinkel));// Schrägungswinkel im Stirnschnitt
-	delta_b = asin(cos(alpha_stirn)*sin(teilkegelwinkel));			// Grundkegelwinkel		
+	delta_b = asin(cos(alpha_stirn)*sin(teilkegelwinkel));			// Grundkegelwinkel
 	da_aussen = (modul <1)? d_aussen + (modul * 2.2) * cos(teilkegelwinkel): d_aussen + modul * 2 * cos(teilkegelwinkel);
 	ra_aussen = da_aussen / 2;
 	delta_a = asin(ra_aussen/rg_aussen);
@@ -548,24 +548,24 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 	delta_f = asin(rf_aussen/rg_aussen);
 	rkf = rg_aussen*sin(delta_f);									// Radius des Kegelfußes
 	hoehe_f = rg_aussen*cos(delta_f);								// Höhe des Kegels vom Fußkegel
-	
+
 	echo("Teilkegeldurchmesser auf der Kegelgrundfläche = ", d_aussen);
-	
+
 	// Größen für Komplementär-Kegelstumpf
 	hoehe_k = (rg_aussen-zahnbreite)/cos(teilkegelwinkel);			// Höhe des Komplementärkegels für richtige Zahnlänge
 	rk = (rg_aussen-zahnbreite)/sin(teilkegelwinkel);				// Fußradius des Komplementärkegels
-	rfk = rk*hoehe_k*tan(delta_f)/(rk+hoehe_k*tan(delta_f));		// Kopfradius des Zylinders für 
+	rfk = rk*hoehe_k*tan(delta_f)/(rk+hoehe_k*tan(delta_f));		// Kopfradius des Zylinders für
 																	// Komplementär-Kegelstumpf
 	hoehe_fk = rk*hoehe_k/(hoehe_k*tan(delta_f)+rk);				// Hoehe des Komplementär-Kegelstumpfs
 
 	echo("Höhe Kegelrad = ", hoehe_f-hoehe_fk);
-	
+
 	phi_r = kugelev(delta_b, teilkegelwinkel);						// Winkel zum Punkt der Evolvente auf Teilkegel
-		
+
 	// Torsionswinkel gamma aus Schrägungswinkel
 	gamma_g = 2*atan(zahnbreite*tan(schraegungswinkel)/(2*rg_aussen-zahnbreite));
 	gamma = 2*asin(rg_aussen/r_aussen*sin(gamma_g/2));
-	
+
 	schritt = (delta_a - delta_b)/16;
 	tau = 360/zahnzahl;												// Teilungswinkel
 	start = (delta_b > delta_f) ? delta_b : delta_f;
@@ -576,13 +576,13 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 																	// macht Ausrichtung mit anderen Rädern einfacher
 		translate([0,0,hoehe_f]) rotate(a=[0,180,0]){
 			union(){
-				translate([0,0,hoehe_f]) rotate(a=[0,180,0]){								// Kegelstumpf							
+				translate([0,0,hoehe_f]) rotate(a=[0,180,0]){								// Kegelstumpf
 					difference(){
 						linear_extrude(height=hoehe_f-hoehe_fk, scale=rfk/rkf) circle(rkf*1.001); // 1 promille Überlappung mit Zahnfuß
 						translate([0,0,-1]){
 							cylinder(h = hoehe_f-hoehe_fk+2, r = bohrung/2);				// Bohrung
 						}
-					}	
+					}
 				}
 				for (rot = [0:tau:360]){
 					rotate (rot) {															// "Zahnzahl-mal" kopieren und drehen
@@ -596,11 +596,11 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 										kugel_zu_kart([rg_aussen, start*1.001, flankenpunkt_unten]),	// 1 promille Überlappung mit Zahn
 										kugel_zu_kart([rg_innen, start*1.001, flankenpunkt_unten+gamma]),
 										kugel_zu_kart([rg_innen, start*1.001, spiegelpunkt-flankenpunkt_unten+gamma]),
-										kugel_zu_kart([rg_aussen, start*1.001, spiegelpunkt-flankenpunkt_unten]),								
+										kugel_zu_kart([rg_aussen, start*1.001, spiegelpunkt-flankenpunkt_unten]),
 										kugel_zu_kart([rg_aussen, delta_f, flankenpunkt_unten]),
 										kugel_zu_kart([rg_innen, delta_f, flankenpunkt_unten+gamma]),
 										kugel_zu_kart([rg_innen, delta_f, spiegelpunkt-flankenpunkt_unten+gamma]),
-										kugel_zu_kart([rg_aussen, delta_f, spiegelpunkt-flankenpunkt_unten])								
+										kugel_zu_kart([rg_aussen, delta_f, spiegelpunkt-flankenpunkt_unten])
 									],
 									faces = [[0,1,2],[0,2,3],[0,4,1],[1,4,5],[1,5,2],[2,5,6],[2,6,3],[3,6,7],[0,3,7],[0,7,4],[4,6,5],[4,7,6]],
 									convexity =1
@@ -615,11 +615,11 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 										kugel_zu_kart([rg_aussen, delta, flankenpunkt_unten]),
 										kugel_zu_kart([rg_innen, delta, flankenpunkt_unten+gamma]),
 										kugel_zu_kart([rg_innen, delta, spiegelpunkt-flankenpunkt_unten+gamma]),
-										kugel_zu_kart([rg_aussen, delta, spiegelpunkt-flankenpunkt_unten]),								
+										kugel_zu_kart([rg_aussen, delta, spiegelpunkt-flankenpunkt_unten]),
 										kugel_zu_kart([rg_aussen, delta+schritt, flankenpunkt_oben]),
 										kugel_zu_kart([rg_innen, delta+schritt, flankenpunkt_oben+gamma]),
 										kugel_zu_kart([rg_innen, delta+schritt, spiegelpunkt-flankenpunkt_oben+gamma]),
-										kugel_zu_kart([rg_aussen, delta+schritt, spiegelpunkt-flankenpunkt_oben])									
+										kugel_zu_kart([rg_aussen, delta+schritt, spiegelpunkt-flankenpunkt_oben])
 									],
 									faces = [[0,1,2],[0,2,3],[0,4,1],[1,4,5],[1,5,2],[2,5,6],[2,6,3],[3,6,7],[0,3,7],[0,7,4],[4,6,5],[4,7,6]],
 									convexity =1
@@ -627,7 +627,7 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 							}
 						}
 					}
-				}	
+				}
 			}
 		}
 	}
@@ -643,12 +643,12 @@ module kegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffs
 module pfeilkegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eingriffswinkel = 20, schraegungswinkel=0){
 
 	// Dimensions-Berechnungen
-	
+
 	zahnbreite = zahnbreite / 2;
-	
+
 	d_aussen = modul * zahnzahl;								// Teilkegeldurchmesser auf der Kegelgrundfläche,
 																// entspricht der Sehne im Kugelschnitt
-	r_aussen = d_aussen / 2;									// Teilkegelradius auf der Kegelgrundfläche 
+	r_aussen = d_aussen / 2;									// Teilkegelradius auf der Kegelgrundfläche
 	rg_aussen = r_aussen/sin(teilkegelwinkel);					// Großkegelradius, entspricht der Länge der Kegelflanke;
 	c = modul / 6;												// Kopfspiel
 	df_aussen = d_aussen - (modul +c) * 2 * cos(teilkegelwinkel);
@@ -659,16 +659,16 @@ module pfeilkegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, eing
 	// Torsionswinkel gamma aus Schrägungswinkel
 	gamma_g = 2*atan(zahnbreite*tan(schraegungswinkel)/(2*rg_aussen-zahnbreite));
 	gamma = 2*asin(rg_aussen/r_aussen*sin(gamma_g/2));
-	
+
 	echo("Teilkegeldurchmesser auf der Kegelgrundfläche = ", d_aussen);
-	
+
 	// Größen für Komplementär-Kegelstumpf
 	hoehe_k = (rg_aussen-zahnbreite)/cos(teilkegelwinkel);		// Höhe des Komplementärkegels für richtige Zahnlänge
 	rk = (rg_aussen-zahnbreite)/sin(teilkegelwinkel);			// Fußradius des Komplementärkegels
-	rfk = rk*hoehe_k*tan(delta_f)/(rk+hoehe_k*tan(delta_f));	// Kopfradius des Zylinders für 
+	rfk = rk*hoehe_k*tan(delta_f)/(rk+hoehe_k*tan(delta_f));	// Kopfradius des Zylinders für
 																// Komplementär-Kegelstumpf
 	hoehe_fk = rk*hoehe_k/(hoehe_k*tan(delta_f)+rk);			// Hoehe des Komplementär-Kegelstumpfs
-	
+
 	modul_innen = modul*(1-zahnbreite/rg_aussen);
 
 		union(){
@@ -691,25 +691,25 @@ module spiralkegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, ein
 	schritte = 16;
 
 	// Dimensions-Berechnungen
-	
-	b = zahnbreite / schritte;	
+
+	b = zahnbreite / schritte;
 	d_aussen = modul * zahnzahl;								// Teilkegeldurchmesser auf der Kegelgrundfläche,
 																// entspricht der Sehne im Kugelschnitt
-	r_aussen = d_aussen / 2;									// Teilkegelradius auf der Kegelgrundfläche 
+	r_aussen = d_aussen / 2;									// Teilkegelradius auf der Kegelgrundfläche
 	rg_aussen = r_aussen/sin(teilkegelwinkel);					// Großkegelradius, entspricht der Länge der Kegelflanke;
 	rg_mitte = rg_aussen-zahnbreite/2;
 
 	echo("Teilkegeldurchmesser auf der Kegelgrundfläche = ", d_aussen);
 
 	a=tan(schraegungswinkel)/rg_mitte;
-	
+
 	union(){
 	for(i=[0:1:schritte-1]){
 		r = rg_aussen-i*b;
 		schraegungswinkel = a*r;
 		modul_r = modul-b*i/rg_aussen;
 		translate([0,0,b*cos(teilkegelwinkel)*i])
-			
+
 			rotate(a=-schraegungswinkel*i,v=[0,0,1])
 				kegelrad(modul_r, zahnzahl, teilkegelwinkel, b, bohrung, eingriffswinkel, schraegungswinkel);	// obere Hälfte
 		}
@@ -728,23 +728,23 @@ module spiralkegelrad(modul, zahnzahl, teilkegelwinkel, zahnbreite, bohrung, ein
 	schraegungswinkel = Schrägungswinkel, Standardwert = 0°
 	zusammen_gebaut = Komponenten zusammengebaut für Konstruktion oder auseinander zum 3D-Druck */
 module kegelradpaar(modul, zahnzahl_rad, zahnzahl_ritzel, achsenwinkel=90, zahnbreite, bohrung_rad, bohrung_ritzel, eingriffswinkel=20, schraegungswinkel=0, zusammen_gebaut=true){
- 
+
 	// Dimensions-Berechnungen
 	r_rad = modul*zahnzahl_rad/2;							// Teilkegelradius des Rads
 	delta_rad = atan(sin(achsenwinkel)/(zahnzahl_ritzel/zahnzahl_rad+cos(achsenwinkel)));	// Kegelwinkel des Rads
 	delta_ritzel = atan(sin(achsenwinkel)/(zahnzahl_rad/zahnzahl_ritzel+cos(achsenwinkel)));// Kegelwingel des Ritzels
 	rg = r_rad/sin(delta_rad);								// Radius der Großkugel
 	c = modul / 6;											// Kopfspiel
-	df_ritzel = pi*rg*delta_ritzel/90 - 2 * (modul + c);	// Fußkegeldurchmesser auf der Großkugel 
+	df_ritzel = pi*rg*delta_ritzel/90 - 2 * (modul + c);	// Fußkegeldurchmesser auf der Großkugel
 	rf_ritzel = df_ritzel / 2;								// Fußkegelradius auf der Großkugel
 	delta_f_ritzel = rf_ritzel/(pi*rg) * 180;				// Kopfkegelwinkel
 	rkf_ritzel = rg*sin(delta_f_ritzel);					// Radius des Kegelfußes
 	hoehe_f_ritzel = rg*cos(delta_f_ritzel);				// Höhe des Kegels vom Fußkegel
-	
+
 	echo("Kegelwinkel Rad = ", delta_rad);
 	echo("Kegelwinkel Ritzel = ", delta_ritzel);
- 
-	df_rad = pi*rg*delta_rad/90 - 2 * (modul + c);			// Fußkegeldurchmesser auf der Großkugel 
+
+	df_rad = pi*rg*delta_rad/90 - 2 * (modul + c);			// Fußkegeldurchmesser auf der Großkugel
 	rf_rad = df_rad / 2;									// Fußkegelradius auf der Großkugel
 	delta_f_rad = rf_rad/(pi*rg) * 180;						// Kopfkegelwinkel
 	rkf_rad = rg*sin(delta_f_rad);							// Radius des Kegelfußes
@@ -752,14 +752,14 @@ module kegelradpaar(modul, zahnzahl_rad, zahnzahl_ritzel, achsenwinkel=90, zahnb
 
 	echo("Höhe Rad = ", hoehe_f_rad);
 	echo("Höhe Ritzel = ", hoehe_f_ritzel);
-	
+
 	drehen = istgerade(zahnzahl_ritzel);
-	
+
 	// Zeichnung
 	// Rad
 	rotate([0,0,180*(1-spiel)/zahnzahl_rad*drehen])
 		kegelrad(modul, zahnzahl_rad, delta_rad, zahnbreite, bohrung_rad, eingriffswinkel, schraegungswinkel);
-	
+
 	// Ritzel
 	if (zusammen_gebaut)
 		translate([-hoehe_f_ritzel*cos(90-achsenwinkel),0,hoehe_f_rad-hoehe_f_ritzel*sin(90-achsenwinkel)])
@@ -782,22 +782,22 @@ module kegelradpaar(modul, zahnzahl_rad, zahnzahl_ritzel, achsenwinkel=90, zahnb
     schraegungswinkel = Schrägungswinkel, Standardwert = 0°
 	zusammen_gebaut = Komponenten zusammengebaut für Konstruktion oder auseinander zum 3D-Druck */
 module pfeilkegelradpaar(modul, zahnzahl_rad, zahnzahl_ritzel, achsenwinkel=90, zahnbreite, bohrung_rad, bohrung_ritzel, eingriffswinkel = 20, schraegungswinkel=10, zusammen_gebaut=true){
- 
+
 	r_rad = modul*zahnzahl_rad/2;							// Teilkegelradius des Rads
 	delta_rad = atan(sin(achsenwinkel)/(zahnzahl_ritzel/zahnzahl_rad+cos(achsenwinkel)));	// Kegelwinkel des Rads
 	delta_ritzel = atan(sin(achsenwinkel)/(zahnzahl_rad/zahnzahl_ritzel+cos(achsenwinkel)));// Kegelwingel des Ritzels
 	rg = r_rad/sin(delta_rad);								// Radius der Großkugel
 	c = modul / 6;											// Kopfspiel
-	df_ritzel = pi*rg*delta_ritzel/90 - 2 * (modul + c);	// Fußkegeldurchmesser auf der Großkugel 
+	df_ritzel = pi*rg*delta_ritzel/90 - 2 * (modul + c);	// Fußkegeldurchmesser auf der Großkugel
 	rf_ritzel = df_ritzel / 2;								// Fußkegelradius auf der Großkugel
 	delta_f_ritzel = rf_ritzel/(pi*rg) * 180;				// Kopfkegelwinkel
 	rkf_ritzel = rg*sin(delta_f_ritzel);					// Radius des Kegelfußes
 	hoehe_f_ritzel = rg*cos(delta_f_ritzel);				// Höhe des Kegels vom Fußkegel
-	
+
 	echo("Kegelwinkel Rad = ", delta_rad);
 	echo("Kegelwinkel Ritzel = ", delta_ritzel);
- 
-	df_rad = pi*rg*delta_rad/90 - 2 * (modul + c);			// Fußkegeldurchmesser auf der Großkugel 
+
+	df_rad = pi*rg*delta_rad/90 - 2 * (modul + c);			// Fußkegeldurchmesser auf der Großkugel
 	rf_rad = df_rad / 2;									// Fußkegelradius auf der Großkugel
 	delta_f_rad = rf_rad/(pi*rg) * 180;						// Kopfkegelwinkel
 	rkf_rad = rg*sin(delta_f_rad);							// Radius des Kegelfußes
@@ -805,13 +805,13 @@ module pfeilkegelradpaar(modul, zahnzahl_rad, zahnzahl_ritzel, achsenwinkel=90, 
 
 	echo("Höhe Rad = ", hoehe_f_rad);
 	echo("Höhe Ritzel = ", hoehe_f_ritzel);
-	
+
 	drehen = istgerade(zahnzahl_ritzel);
-	
+
 	// Rad
 	rotate([0,0,180*(1-spiel)/zahnzahl_rad*drehen])
 		pfeilkegelrad(modul, zahnzahl_rad, delta_rad, zahnbreite, bohrung_rad, eingriffswinkel, schraegungswinkel);
-	
+
 	// Ritzel
 	if (zusammen_gebaut)
 		translate([-hoehe_f_ritzel*cos(90-achsenwinkel),0,hoehe_f_rad-hoehe_f_ritzel*sin(90-achsenwinkel)])
@@ -841,9 +841,9 @@ module schnecke(modul, gangzahl, laenge, bohrung, eingriffswinkel=20, steigungsw
 	a = modul*gangzahl/(90*tan(eingriffswinkel));				// Spiralparameter
 	tau_max = 180/gangzahl*tan(eingriffswinkel);				// Winkel von Fuß zu Kopf in der Normalen
 	gamma = -rad*laenge/((rf+modul+c)*tan(steigungswinkel));	// Torsionswinkel für Extrusion
-	
+
 	schritt = tau_max/16;
-	
+
 	// Zeichnung: extrudiere mit Verwindung eine Flaeche, die von zwei archimedischen Spiralen eingeschlossen wird
 	if (zusammen_gebaut) {
 		rotate([0,0,tau_max]){
@@ -852,17 +852,17 @@ module schnecke(modul, gangzahl, laenge, bohrung, eingriffswinkel=20, steigungsw
 					union(){
 						for(i=[0:1:gangzahl-1]){
 							polygon(
-								concat(							
+								concat(
 									[[0,0]],
-									
+
 									// ansteigende Zahnflanke
 									[for (tau = [0:schritt:tau_max])
 										pol_zu_kart([spirale(a, rf, tau), tau+i*(360/gangzahl)])],
-										
+
 									// Zahnkopf
 									[for (tau = [tau_max:schritt:180/gangzahl])
 										pol_zu_kart([spirale(a, rf, tau_max), tau+i*(360/gangzahl)])],
-									
+
 									// absteigende Zahnflanke
 									[for (tau = [180/gangzahl:schritt:(180/gangzahl+tau_max)])
 										pol_zu_kart([spirale(a, rf, 180/gangzahl+tau_max-tau), tau+i*(360/gangzahl)])]
@@ -909,7 +909,7 @@ steigungswinkel = Steigungswinkel der Schnecke, entspricht 90°-Schrägungswinke
 optimiert = Löcher zur Material-/Gewichtsersparnis
 zusammen_gebaut =  Komponenten zusammengebaut für Konstruktion oder auseinander zum 3D-Druck */
 module schneckenradsatz(modul, zahnzahl, gangzahl, breite, laenge, bohrung_schnecke, bohrung_rad, eingriffswinkel=20, steigungswinkel, optimiert=true, zusammen_gebaut=true){
-	
+
 	c = modul / 6;												// Kopfspiel
 	r_schnecke = modul*gangzahl/(2*sin(steigungswinkel));		// Teilzylinder-Radius Schnecke
 	r_rad = modul*zahnzahl/2;									// Teilkegelradius Stirnrad
@@ -927,7 +927,7 @@ module schneckenradsatz(modul, zahnzahl, gangzahl, breite, laenge, bohrung_schne
 			rotate([0,0,gamma])
 				stirnrad (modul, zahnzahl, breite, bohrung_rad, eingriffswinkel, -steigungswinkel, optimiert);
 	}
-	else {	
+	else {
 		schnecke(modul, gangzahl, laenge, bohrung_schnecke, eingriffswinkel, steigungswinkel, zusammen_gebaut);
 
 		translate([-2*r_rad,0,0])

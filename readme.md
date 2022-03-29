@@ -6,7 +6,7 @@ Gears Library for OpenSCAD
 - For translation progress, see the "Tasks" section below.
 - The English branch is now the default branch. It only has English, so finding information is easier for English-speaking users.
   - To keep track of upstream changes (such as by viewing commit diffs), the new upstream-janssen86 branch will always match janssen86's version.
-- Features and fixes from [Erhannis's fork](https://github.com/Erhannis/getriebe) are included.
+- Features and fixes from [Erhannis' fork](https://github.com/Erhannis/getriebe) are included (Erhannis' is based on janssen86's version 2.3).
 
 ### Translation methods
 To reduce work and allow for easier comparison between forks, parameter names will be based on [openscad gears (english)](https://www.thingiverse.com/thing:2123204) by [benengel](https://www.thingiverse.com/benengel) February 20, 2017 ([Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0)) except
@@ -16,6 +16,11 @@ fixed (to match proper engineering terms in the original janssen86 post [ignorin
 - `spur_gear` becomes `rack` `*`
 
 `*`: This also affects items translated by Google Translate [See justgetalang below] not provided by benengel.
+
+#### Run auto-translation
+```
+python3 ./lang/translate.py
+```
 
 #### justgetalang
 (requires <https://github.com/poikilos/justgetalang>)
@@ -30,6 +35,8 @@ python -m pip install googletrans==4.0.0rc1 --user
 ```
 
 ##### Tasks
+To translate to English (recreate gearlib.scad), see the "Run auto-translation" section.
+
 - [ ] Manually process trCache.json to reflect English engineering terms.
   - [x] game` becomes `play`
 - [ ] Implement the standard output of the justgetalang command above into "lang/upstream/en.py".
