@@ -3,10 +3,91 @@ Gears Library for OpenSCAD
 
 
 ## Differences in Poikilos' fork
+- For translation progress, see the "Tasks" section below.
 - The English branch is now the default branch. It only has English, so finding information is easier for English-speaking users.
-  - To reduce work, parameter names will be based on [openscad gears (english)](https://www.thingiverse.com/thing:2123204) by [benengel](https://www.thingiverse.com/benengel) February 20, 2017 ([Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0))
   - To keep track of upstream changes (such as by viewing commit diffs), the new upstream-janssen86 branch will always match janssen86's version.
 - Features and fixes from [Erhannis's fork](https://github.com/Erhannis/getriebe) are included.
+
+### Translation methods
+To reduce work and allow for easier comparison between forks, parameter names will be based on [openscad gears (english)](https://www.thingiverse.com/thing:2123204) by [benengel](https://www.thingiverse.com/benengel) February 20, 2017 ([Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0)) except
+fixed (to match proper engineering terms in the original janssen86 post [ignoring the issue where the second english section containing "zahnstange" should instead contain "zahnstange_und_ritzel"] or elsewhere):
+- `game` becomes `play` `*`
+- `scale_of` becomes `module_arc_length` `*`
+- `spur_gear` becomes `rack` `*`
+
+`*`: This also affects items translated by Google Translate [See justgetalang below] not provided by benengel.
+
+#### justgetalang
+(requires <https://github.com/poikilos/justgetalang>)
+```
+./langdump.py Getriebe.scad > lang/upstream/de.py
+cd lang/upstream
+python -m pip install googletrans==4.0.0rc1 --user
+~/git/justgetalang/justgetalang.py --extension py --from de --to en --dictionary data --languages-key comments
+# ^ Doesn't need internet if processing the upstream Getriebe.scad since the trCache.json for justgetalang is included.
+# usually add:
+# > en.py
+```
+
+##### Tasks
+- [ ] Manually process trCache.json to reflect English engineering terms.
+  - [x] game` becomes `play`
+- [ ] Implement the standard output of the justgetalang command above into "lang/upstream/en.py".
+- For language files:
+  - [ ] Merge "lang/upstream/*.py" into "lang/*.py"
+  - [ ] Add benengel's variable names to "lang/*.py"
+- [ ] Utilize "lang/*.py" files to create an auto-translation script, from largest to smallest string to avoid changing words within phrases which would make the phrases not able to be found.
+
+## Terms
+Pitch Circle Diameter (PCD) is the circle where the widening part of the spur starts becoming narrower (See image at link below).
+
+> Module
+> The length in mm of the pitch circle diameter per tooth.
+> MOD = PCD / N
+>
+> Number of Teeth
+> The number of teeth on the gear.
+> N = PCD / MOD
+>
+> Pitch Circle Diameter
+> The diameter of the pitch circle.
+> PCD = N x MOD
+>
+> Outside Diameter
+> The outside diameter of the gear.
+> OD = (N + 2) x MOD
+>
+> Center Distance
+> The distance between the axes of two gears in mesh.
+> C = PCD(g) + PCD(p)
+>     ---------------
+>           2
+>
+> Circular Pitch
+> The distance between adjacent teeth measured along the arc at the pitch circle diameter.
+> CP = pi x MOD
+>
+> Circular Tooth Thickness
+> The width of a tooth measured along the arc at the pitch circle diameter.
+> CTT = CP / 2
+>
+> Addendum
+> The height of the tooth above the pitch circle diameter.
+> A = MOD
+>
+> Dedendum
+> The depth of the tooth below the pitch circle diameter.
+> D = H - A
+>
+> Whole Depth
+> The total depth of the space between adjacent teeth.
+> Finer than 1.25 MOD:
+> H = 2.4 x MOD
+>
+> 1.25 MOD and coarser:
+> H = 2.25 x MOD
+
+-Bell, Steven J. "Metric Gears." <http://www.metrication.com/engineering/gears.html>
 
 
 ## License
