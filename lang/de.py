@@ -50,7 +50,7 @@ def load_lang(data, doc_opener_keys):
     data['param_help'][lang]['rack length'] = "Länge der Zahnstange"
     data['parameters'][lang]['rack height'] = "hoehe"
     data['param_help'][lang]['rack height'] = "Höhe der Zahnstange bis zur Wälzgeraden"
-    data['parameters'][lang]['rack width'] = "width"
+    data['parameters'][lang]['rack width'] = "breite"
     data['param_help'][lang]['rack width'] = "Breite eines Zahns"
     data['parameters'][lang]['rack pressure_angle'] = "eingriffswinkel"
     data['param_help'][lang]['rack pressure_angle'] = "Eingriffswinkel, Standardwert = 20° gemäß DIN 867. Sollte nicht größer als 45° sein."
