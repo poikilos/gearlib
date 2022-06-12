@@ -41,7 +41,17 @@ Antlr
 JavaScript
 - There are at least 2 NPM modules for parsing OpenSCAD as well as [openscad-wasm](https://hackaday.com/2022/03/14/the-noble-effort-to-put-openscad-in-the-browser/).
 
+#### old_translate.py
+The file was deprecated since it is not aware of context. It tries to be, but would have to be more and more complex to fix translation errors such as:
+```C++
+function rack_dimensions(module_arc_len, length, height, width, pressure_angle = 20, helix_angle = 0) = [length,width,module_arc_len*(1-play),height+module_arc_len*(1-play)];
 
+/*  Create a parametric gear rack.
+    module_arc_len = height of the tooth tip above the pitch circle diameter (PCD) line
+    length = Länge der Create a parametric gear rack.
+```
+
+Therefore, the new ./lang/translate.py will use <https://gitlab.com/bath_open_instrumentation_group/sca2d>.
 #### Run auto-translation
 ```
 python3 ./lang/translate.py
