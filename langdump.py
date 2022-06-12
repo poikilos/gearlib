@@ -8,7 +8,7 @@ import hashlib
 wordPattern = re.compile('[\W_]+')
 encoding = 'utf-8'
 
-def error(*args, **kwargs):
+def echo0(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
@@ -26,13 +26,13 @@ def string_to_key(sentence):
 def dump_value(value, prefix="data['comments']['de']['", suffix="']"):
     key = string_to_key(value)
     if len(key) == 0:
-        error("Warning: \"{}\" has no alphanumeric characters"
+        echo0("Warning: \"{}\" has no alphanumeric characters"
               "and will get a hash id".format(value))
         sBytes = value.encode(encoding)
         key = hashlib.md5(sBytes)
     key = key.replace("'", '\\\'')
     if key in got_dict:
-        error("# already got ['{}'] = \"{}\"".format(key, value))
+        echo0("# already got ['{}'] = \"{}\"".format(key, value))
         return
     got_dict[key] = value
     print('{}{}{} = "{}"'
@@ -99,36 +99,37 @@ def dump_comments(path):
                     if (multiEndI > -1) and (signI > multiEndI):
                         # The sign is not in the comment.
                         if isTest:
-                            error("TEST FAILED: \"{}\" result: The sign"
+                            echo0("TEST FAILED: \"{}\" result: The sign"
                                   " is not in the comment"
                                   "(signI={}, multiEndI={})."
                                   "".format(testValue, signI,
                                             multiEndI))
-                            exit(1)
+                            return 1
                         continue
                     value = line[start:end].strip()
                     dump_values(value, sign)
                     continue
                 else:
-                    error("Warning: The line will be ignored"
+                    echo0("Warning: The line will be ignored"
                           " since there is neither a multiline comment"
                           " opening nor '{}': {}".format(sign, line))
                 # else ignore a comment that doesn't describe a variable
                 # and isn't on the first line of a comment
             if isTest:
-                error("TEST FAILED: \"{}\" result: ignore a comment"
+                echo0("TEST FAILED: \"{}\" result: ignore a comment"
                       " that doesn't describe a variable"
                       "".format(testValue))
-                exit(1)
+                return 1
+    return 0
 
 
 def main():
     if len(sys.argv) < 2:
-        error("You must specify a file in SCAD format"
+        echo0("You must specify a file in SCAD format"
               " (or another format with C-like comments).")
-        exit(1)
-    dump_comments(sys.argv[1])
+        return 1
+    return dump_comments(sys.argv[1])
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

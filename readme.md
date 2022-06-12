@@ -17,6 +17,31 @@ fixed (to match proper engineering terms in the original janssen86 post [ignorin
 
 `*`: This also affects items translated by Google Translate [See justgetalang below] not provided by benengel.
 
+#### Lexing
+Lark
+- There is already a OpenSCAD parser for Lark: <https://gitlab.com/bath_open_instrumentation_group/sca2d>
+
+PLY (Pure Python implementation of Lex-YACC)
+- Lexographical analysis of a SCAD file could be done using the spec included within FreeCAD since FreeCAD uses.
+- It provides tokenization not contextual parsing or an AST (Abstract Syntax Tree).
+
+YACC
+(Yet Another Compiler Compiler)
+- OpenSCAD itself uses the C++ version of YACC, which apparently generates /parser_yacc.cpp as that file is listed in the .gitignore file.
+
+Bison
+- GNU Bison/Flex is fast but is doesn't have a native Python implementation so it is only available in Python using a wrapper: <https://pypi.org/project/pybison/>.
+- There is a bison.pri file for OpenSCAD as a part of prototypable's fork of OpenSCAD which is designed to operate as an OpenSCAD backend for prototypable: <https://github.com/prototypable/openscad-backend/blob/master/bison.pri>.
+
+Antlr
+- A BNF (Backus-Naur Form) fils is available at <https://github.com/GilesBathgate/RapCAD/blob/master/doc/openscad.bnf>.
+  - g4 may be the file extension also. See <https://faun.pub/introduction-to-antlr-python-af8a3c603d23>.
+- Antlr can be used in Python but is primarily in the Java ecosystem. See <https://www.antlr.org/about.html>.
+
+JavaScript
+- There are at least 2 NPM modules for parsing OpenSCAD as well as [openscad-wasm](https://hackaday.com/2022/03/14/the-noble-effort-to-put-openscad-in-the-browser/).
+
+
 #### Run auto-translation
 ```
 python3 ./lang/translate.py
@@ -38,7 +63,7 @@ python -m pip install googletrans==4.0.0rc1 --user
 To translate to English (recreate gearlib.scad), see the "Run auto-translation" section.
 
 - [ ] Manually process trCache.json to reflect English engineering terms.
-  - [x] game` becomes `play`
+  - [x] `game` becomes `play`
 - [ ] Implement the standard output of the justgetalang command above into "lang/upstream/en.py".
 - For language files:
   - [ ] Merge "lang/upstream/*.py" into "lang/*.py"

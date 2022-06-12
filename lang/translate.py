@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+from __future__ import print_function
 import os
 import sys
 import re
+import json
 from de import load_lang as load_lang_de
 from en import load_lang as load_lang_en
 
@@ -9,14 +11,23 @@ myPath = os.path.abspath(__file__)
 myDir = os.path.dirname(myPath)
 repoDir = os.path.dirname(myDir)
 
+verbose = 0
 
-def error(*args, **kwargs):
+
+def echo0(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+def echo1(*args, **kwargs):
+    if verbose < 1:
+        return
     print(*args, file=sys.stderr, **kwargs)
 
 
 roots = ['comments', 'variables', 'parameters', 'param_help',
          'functions']
 functions_start_flag = "// Global"
+
 
 def generate_skel(data, doc_opener_keys, lang):
     if data.get('comments') is None:
@@ -47,7 +58,11 @@ def keysByLongestValue(d):
     '''
     tuples = list(d.items())  # Create a list of (key, value) tuples.
     tuples.sort(key=lambda x: len(x[1]), reverse=True)
+    echo1("ORDER:")
+    for t in tuples:
+        echo1(t)
     return [x[0] for x in tuples]
+
 
 param_help_doc = ("Each param_help key must have two parts such as"
                   " \"rack module\"")
@@ -56,6 +71,7 @@ doc_opener_doc = ("The value of doc_opener_keys must start with a"
                   " declaration of a known type (any of {} followed by"
                   " a name)"
                   "".format(known_decls))
+
 
 def uncommented_stripped(line):
     line = line.strip()
@@ -95,6 +111,20 @@ def rewrite_as_lang(srcPath, dstPath, data, doc_opener_keys,
             keys.append(source)
             # replacements[source] =
     started_funcs = False
+    combined = {}
+    for root_key, langs in data.items():
+        for lang, d in langs.items():
+            combined[lang] = {}
+            for key, pattern in d.items():
+                if combined[lang].get(key) is not None:
+                    raise ValueError(
+                        "{} already exists for {}".format(key, lang)
+                    )
+                combined[lang][key] = pattern
+    orderedKeys = keysByLongestValue(combined[fromLang])
+    # ^ This is useful for doing the longest first (If context consideration
+    #   isn't implemented, longest first is the only way to correctly identify
+    #   terms).
     with open(dstPath, 'w') as outs:
         lineN = 0
         documenting_func = None
@@ -119,24 +149,28 @@ def rewrite_as_lang(srcPath, dstPath, data, doc_opener_keys,
                         declType = declParts[0]
                         doc_closing = ("{} {}("
                                        "".format(declType, function))
-                        error("* documenting {} until \"{}\""
+                        echo0("* documenting {} until \"{}\""
                               "".format(documenting_func, doc_closing))
                         break
                     else:
                         pass
                         '''
-                        error("[debug] {} is not in: \"{}\""
+                        echo0("[debug] {} is not in: \"{}\""
                               "".format(tryFlag, line))
                         '''
-            orderedKeys = keysByLongestValue(data['comments'][fromLang])
-            # error("dict order test:")
-            for strKey in orderedKeys:
+            orderedCommentsKeys = keysByLongestValue(data['comments'][fromLang])
+            # echo0("dict order test:")
             # for strKey, fromStr in data['comments'][fromLang].items():
+            for strKey in orderedCommentsKeys:
                 fromStr = data['comments'][fromLang][strKey]
-                # error("  {}: \"{}\"".format(strKey, fromStr))
+                # echo0("  {}: \"{}\"".format(strKey, fromStr))
                 toStr = data['comments'][toLang][strKey]
                 line = line.replace(fromStr, toStr)
-            for strKey, fromStr in data['param_help'][fromLang].items():
+
+            orderedParamKeys = keysByLongestValue(data['param_help'][fromLang])
+            # for strKey, fromStr in data['param_help'][fromLang].items():
+            for strKey in orderedParamKeys:
+                fromStr = data['param_help'][fromLang][strKey]
                 toStr = data['param_help'][toLang][strKey]
                 strKeyParts = strKey.split(" ")
                 strKeyFunction = None
@@ -170,7 +204,7 @@ def rewrite_as_lang(srcPath, dstPath, data, doc_opener_keys,
                     doc_closing = None
                     documenting_func = None
                 else:
-                    error("  * documenting {} with: {}"
+                    echo0("  * documenting {} with: {}"
                           "".format(documenting_func, line))
             # end for line
             if functions_start_flag in line:
@@ -179,14 +213,15 @@ def rewrite_as_lang(srcPath, dstPath, data, doc_opener_keys,
         sys.stderr.write("\r")
         sys.stderr.write("* processing line {} of {}...OK              "
                          "".format(lineN, len(lines)))
-        error("")
+        echo0("")
+
 
 def main():
     data = {}
     doc_opener_keys = {}
     '''
     if len(sys.argv) < 3:
-        error("Error: You must specify a source and destination file.")
+        echo0("Error: You must specify a source and destination file.")
         exit(1)
     srcPath = sys.argv[1]
     dstPath = sys.argv[2]
@@ -194,15 +229,17 @@ def main():
     srcPath = os.path.realpath(os.path.join(repoDir, "Getriebe.scad"))
     dstPath = os.path.realpath(os.path.join(repoDir, "gearlib.scad"))
     if not os.path.isfile(srcPath):
-        error("Error: \"{}\" doesn't exist.".format(srcPath))
-        exit(1)
+        echo0("Error: {} doesn't exist.".format(json.dumps(srcPath)))
+        return 1
     generate_skel(data, doc_opener_keys, 'de')
     load_lang_de(data, doc_opener_keys)
     generate_skel(data, doc_opener_keys, 'en')
     load_lang_en(data, doc_opener_keys)
-    error("* writing \"{}\"...".format(dstPath))
+    echo0("* writing \"{}\"...".format(dstPath))
     rewrite_as_lang(srcPath, dstPath, data, doc_opener_keys,
                     'de', 'en')
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
