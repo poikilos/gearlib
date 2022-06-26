@@ -5,8 +5,9 @@ import re
 # import string
 import hashlib
 
-wordPattern = re.compile('[\W_]+')
+wordPattern = re.compile(r'[\W_]+')
 encoding = 'utf-8'
+
 
 def echo0(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -19,8 +20,9 @@ def string_to_key(sentence):
     # return hashlib.md5(s)
     # See https://stackoverflow.com/a/1277047/4541104
     # return wordPattern.sub('', sentence)
-    # return re.sub('[\W_]+', '', sentence)
-    return re.sub('[\W_]+', ' ', sentence, flags=re.UNICODE) # keep ' '
+    # return re.sub(r'[\W_]+', '', sentence)
+    return re.sub(r'[\W_]+', ' ', sentence, flags=re.UNICODE)
+    # ^ keep ' '
 
 
 def dump_value(value, prefix="data['comments']['de']['", suffix="']"):
