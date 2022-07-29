@@ -56,6 +56,9 @@ except ImportError as ex:
                                        "__init__.py")):
             echo0('* using sca2d from the "" repo.'.format(TRY_SCA2D))
             sys.path.insert(0, TRY_SCA2D)
+        else:
+            echo0("Error: no sca2d")
+            raise ex
     else:
         raise ex
 
@@ -69,6 +72,7 @@ from sca2d.messages import (
 wordPattern = re.compile(r'[\W_]+')
 encoding = 'utf-8'
 
+HOME = pathlib.Path.home()
 SCAD_GRAM_PATH = os.path.join(HOME, "Downloads", "git",
                               "bath_open_instrumentation_group",
                               "sca2d", "sca2d", "lark", "scad.lark")

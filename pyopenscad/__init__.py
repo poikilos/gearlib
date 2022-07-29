@@ -61,7 +61,7 @@ def string_to_key(sentence):
     # return hashlib.md5(s)
     # See https://stackoverflow.com/a/1277047/4541104
     # return wordPattern.sub('', sentence)
-    # return re.sub('[\W_]+', '', sentence)
+    # return re.sub(r'[\W_]+', '', sentence)
     return re.sub(r'[\W_]+', ' ', sentence, flags=re.UNICODE)
     # ^ keep ' '
 
