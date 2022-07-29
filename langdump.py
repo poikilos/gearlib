@@ -4,131 +4,165 @@ import os
 import re
 # import string
 import hashlib
+import pathlib
 
-wordPattern = re.compile('[\W_]+')
+MODULE_DIR = os.path.dirname(__file__)
+REPO_DIR = os.path.dirname(__file__)  # same as MODULE_DIR in this case
+REPOS_DIR = os.path.dirname(REPO_DIR)
+
+import pyopenscad
+# from pyopenscad.scad import (
+#     ScadAnalyser,
+# )
+from pyopenscad import (
+    echo0,
+    echo1,
+    echo2,
+    done_args,
+)
+
+
+try:
+    import pycodetool
+except ImportError as ex:
+    # ^ Python 3 ModuleNotFoundError is a subclass of ImportError
+    if (("No module named 'pycodetool'" in str(ex))  # Python 3
+            or ("No module named pycodetool" in str(ex))):  # Python 2
+        try_repo_dir = os.path.join(REPOS_DIR, "pycodetool")
+        ok_flag = os.path.join(try_repo_dir, "pycodetool", "__init__.py")
+        if os.path.isfile(ok_flag):
+            sys.path.insert(0, try_repo_dir)
+        else:
+            pass
+            # echo0("Error: There is no pycodetool.")
+    else:
+        raise ex
+
+# from pycodetool.csharp import (
+#    test_file,
+# )
+
+try:
+    import sca2d
+except ImportError as ex:
+    if (("No module named 'pycodetool'" in str(ex))  # Python 3
+            or ("No module named pycodetool" in str(ex))):  # Python 2
+        HOME = pathlib.Path.home()
+        DOWNLOADS = os.path.join(HOME, "Downloads")
+        TRY_BATH = os.path.join(DOWNLOADS, "git",
+                                "bath_open_instrumentation_group")
+        TRY_SCA2D = os.path.join(TRY_BATH, "sca2d")
+        if os.path.isfile(os.path.join(TRY_SCA2D, "sca2d",
+                                       "__init__.py")):
+            echo0('* using sca2d from the "" repo.'.format(TRY_SCA2D))
+            sys.path.insert(0, TRY_SCA2D)
+    else:
+        raise ex
+
+from sca2d import Analyser
+from sca2d.messages import (
+    print_messages,
+    count_messages,
+    gitlab_summary,
+)
+
+wordPattern = re.compile(r'[\W_]+')
 encoding = 'utf-8'
 
-def echo0(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+SCAD_GRAM_PATH = os.path.join(HOME, "Downloads", "git",
+                              "bath_open_instrumentation_group",
+                              "sca2d", "sca2d", "lark", "scad.lark")
+
+UPSTREAM_PATH = os.path.join(REPO_DIR, "Getriebe.scad")
 
 
-got_dict = {}
-
-
-def string_to_key(sentence):
-    # return hashlib.md5(s)
-    # See https://stackoverflow.com/a/1277047/4541104
-    # return wordPattern.sub('', sentence)
-    # return re.sub('[\W_]+', '', sentence)
-    return re.sub('[\W_]+', ' ', sentence, flags=re.UNICODE) # keep ' '
-
-
-def dump_value(value, prefix="data['comments']['de']['", suffix="']"):
-    key = string_to_key(value)
-    if len(key) == 0:
-        echo0("Warning: \"{}\" has no alphanumeric characters"
-              "and will get a hash id".format(value))
-        sBytes = value.encode(encoding)
-        key = hashlib.md5(sBytes)
-    key = key.replace("'", '\\\'')
-    if key in got_dict:
-        echo0("# already got ['{}'] = \"{}\"".format(key, value))
-        return
-    got_dict[key] = value
-    print('{}{}{} = "{}"'
-          ''.format(prefix, key, suffix, value.replace("\"", "\\\"")))
-
-
-def dump_values(line, sign):
+# shares some code with io_csharptopython.io_csharp_to_python_file
+def _generate_meta(path, analyser, dest_dir, out_name=None):
     '''
     Sequential arguments:
-    A line that may or may not contain multiple values, such as
-    "1, y = 2" for multiple or "1" for one.
+    output_tree -- dest_dir where to save the output
     '''
-    parts = line.split(", ")
-    if len(parts) == 1:
-        dump_value(line)
-        return
-    for part in parts:
-        signI = part.find(sign)
-        if signI > -1:
-            dump_value(part[signI+len(sign):].strip())
-        else:
-            dump_value(part.strip())
 
+    # Cited examples are from
+    # <https://gitlab.com/bath_open_instrumentation_group/sca2d>.
 
-def dump_comments(path):
-    with open(path, 'r') as ins:
-        lineN = 0
-        multiline = False  # in multi-line comment ("/*" to "*/")
-        testValue = "Durchmesser der Mittelbohrung"
-        isTest = False
-        for rawL in ins:
-            line = rawL.rstrip()
-            isTest = False
-            if testValue in line:
-                isTest = True
-            lineN += 1  # Counting numbers start at 1.
-            multiStartI = -1
-            start = 0
-            keep = False
-            end = len(line)
-            if not multiline:
-                multiStartI = line.find("/*")
-                singleI = line.find("//")
-                if singleI > -1:
-                    if ((multiStartI < 0)
-                            or (multiStartI > singleI)):
-                        start = multiStartI + 2
-                        dump_value(line[singleI+2:].strip())
-                        continue
-                if multiStartI > -1:
-                    keep = True  # Always keep the first line
-                    start = multiStartI + 2
-                    multiline = True
-            sign = " = "
-            # ^ " = " comes before a variable description in Getriebe.
-            if multiline:
-                signI = line.find(sign)
-                multiEndI = line.find("*/")
-                if multiEndI > -1:
-                    end = multiEndI
-                    multiline = False
-                if signI > -1:
-                    start = signI + len(sign)
-                    if (multiEndI > -1) and (signI > multiEndI):
-                        # The sign is not in the comment.
-                        if isTest:
-                            echo0("TEST FAILED: \"{}\" result: The sign"
-                                  " is not in the comment"
-                                  "(signI={}, multiEndI={})."
-                                  "".format(testValue, signI,
-                                            multiEndI))
-                            return 1
-                        continue
-                    value = line[start:end].strip()
-                    dump_values(value, sign)
-                    continue
-                else:
-                    echo0("Warning: The line will be ignored"
-                          " since there is neither a multiline comment"
-                          " opening nor '{}': {}".format(sign, line))
-                # else ignore a comment that doesn't describe a variable
-                # and isn't on the first line of a comment
-            if isTest:
-                echo0("TEST FAILED: \"{}\" result: ignore a comment"
-                      " that doesn't describe a variable"
-                      "".format(testValue))
-                return 1
+    # See _run_on_file in sca2d/sca2d/__main__.py for an example.
+    if out_name is None:
+        name = os.path.split(path)[1]
+        nameNoExt, dotExt = os.path.splitext(name)
+        out_name = nameNoExt + ".tree.txt"
+    dst_file = os.path.join(dest_dir, out_name)
+    [parsed, all_messages] = analyser.analyse_file(
+        path,
+        output_tree=dst_file,
+    )
+
+    # See main in sca2d/sca2d/__main__.py for an example:
+    print_messages(all_messages, args.file_or_dir_name, args.colour, args.debug)
+    message_summary = count_messages(all_messages)
+    print(message_summary)
+    with open("gl-code-quality-report.json", "w") as json_file:
+        json.dump(gitlab_summary(all_messages), json_file)
+
+    # TODO: useful things here
+    # print("cat <<END")
+    # tab = "    "
+    # print("END")
+
+    # See example at sca2d/sca2d/__main__.py>
+    # return [parsed, all_messages]
+    if (message_summary.fatal + message_summary.error) > 0:
+        return 1
     return 0
 
 
+def generate_meta(in_path):
+    dest_dir = os.path.dirname(in_path)
+
+    # See example at
+    # <https://
+    # gitlab.com/bath_open_instrumentation_group/sca2d/-/blob/master/
+    # sca2d/__main__.py>
+    verbose = True if verbosity > 0 else False
+    # TODO: analyser = ScadAnalyser(SCAD_GRAM_PATH, verbose=verbose)
+    analyser = Analyser(verbose=args.verbose)
+    _generate_meta(
+        UPSTREAM_PATH,
+        analyser,
+        dest_dir,
+        # out_name="geardrive.scad",
+    )
+
+
 def main():
-    if len(sys.argv) < 2:
-        echo0("You must specify a file in SCAD format"
-              " (or another format with C-like comments).")
-        return 1
-    return dump_comments(sys.argv[1])
+    in_path = None
+    for argI in range(1, len(sys.argv)):
+        arg = sys.argv[argI]
+        if arg.startswith("-"):
+            if arg in done_args:
+                pass
+            else:
+                echo0("Error: The argument {} is invalid.".format(arg))
+                return 1
+        elif in_path is None:
+            if not os.path.isfile(arg):
+                echo0(
+                    'Error: You must either specify a file or not'
+                    ' specify an argument'
+                    ' (to leave the default file "{}")'
+                    ''.format(UPSTREAM_PATH)
+                )
+                return 1
+            in_path = arg
+
+    if in_path is None:
+        # echo0("You must specify a file in SCAD format"
+        #       " (or another format with C-like comments).")
+        # return 1
+        in_path = UPSTREAM_PATH
+    # from pyopenscad.scrape import dump_comments
+    # return dump_comments(sys.argv[1])
+    return test(in_path=in_path)
 
 
 if __name__ == "__main__":

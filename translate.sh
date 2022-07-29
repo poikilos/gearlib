@@ -1,10 +1,10 @@
 #!/bin/bash
 if [ -f ~/.virtualenvs/sca2d/bin/python ]; then
-    ~/.virtualenvs/sca2d/bin/python getriebe/lang/translate.py
+    ~/.virtualenvs/sca2d/bin/python pyopenscad/lang/translate.py
 else
-    python3 getriebe/lang/translate.py
+    python3 pyopenscad/lang/translate.py
 fi
 
 if [ $? -ne 0 ]; then
-    echo "Install the venv using setup.sh from Poikilos' getriebe repo if you are missing module(s)."
+    echo "Install the venv using setup.sh from Poikilos' pyopenscad repo if you are missing module(s)."
 fi

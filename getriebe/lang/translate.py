@@ -4,26 +4,27 @@ import os
 import sys
 import platform
 
-profile = None
+HOME = None
 if platform.system() == "Windows":
-    profile = os.environ['USERPROFILE']
+    HOME = os.environ['USERPROFILE']
 else:
-    profile = os.environ['HOME']
+    HOME = os.environ['HOME']
 
-tryGetriebeRepo = os.path.join(profile, "git", "getriebe")
-if os.path.isdir(tryGetriebeRepo):
-    sys.path.insert(0, tryGetriebeRepo)
+TRY_G_REPO = os.path.join(HOME, "git", "getriebe")
+if os.path.isdir(TRY_G_REPO):
+    sys.path.insert(0, TRY_G_REPO)
 else:
     print("* There is no {}. Trying regular import..."
-          "".format(tryGetriebeRepo), file=sys.stderr)
+          "".format(TRY_G_REPO), file=sys.stderr)
 
-from getriebe import (
+from pyopenscad import (
     echo0,
     echo1,
     echo2,
 )
 
-tryLexRepo = os.path.join(profile, "Downloads", "git", "bath_open_instrumentation_group", "sca2d")
+tryLexRepo = os.path.join(HOME, "Downloads", "git",
+                          "bath_open_instrumentation_group", "sca2d")
 if os.path.isdir(tryLexRepo):
     sys.path.insert(0, tryLexRepo)
 else:

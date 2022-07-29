@@ -59,7 +59,7 @@ setuptools.setup(
     author_email='7557867+poikilos@users.noreply.github.com',
     license='GPLv3+',
     # packages=setuptools.find_packages(),
-    packages=['lang'],
+    packages=['pyopenscad'],
     include_package_data=True,  # look for MANIFEST.in
     # scripts=['example'],
     # ^ Don't use scripts anymore (according to
@@ -71,7 +71,7 @@ setuptools.setup(
     # point-which-calls>
     entry_points={
         'console_scripts': [
-            'translate-getriebe=getriebe.lang.translate:main',
+            'translate-getriebe=pyopenscad.lang.translate:main',
         ],
     },
     install_requires=install_requires,
