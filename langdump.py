@@ -19,6 +19,7 @@ from pyopenscad import (
     echo1,
     echo2,
     done_args,
+    get_verbosity,
 )
 
 
@@ -127,9 +128,9 @@ def generate_meta(in_path):
     # <https://
     # gitlab.com/bath_open_instrumentation_group/sca2d/-/blob/master/
     # sca2d/__main__.py>
-    verbose = True if verbosity > 0 else False
+    verbose = True if get_verbosity() > 0 else False
     # TODO: analyser = ScadAnalyser(SCAD_GRAM_PATH, verbose=verbose)
-    analyser = Analyser(verbose=args.verbose)
+    analyser = Analyser(verbose=verbose)
     _generate_meta(
         UPSTREAM_PATH,
         analyser,
@@ -166,7 +167,7 @@ def main():
         in_path = UPSTREAM_PATH
     # from pyopenscad.scrape import dump_comments
     # return dump_comments(sys.argv[1])
-    return test(in_path=in_path)
+    return generate_meta(in_path=in_path)
 
 
 if __name__ == "__main__":

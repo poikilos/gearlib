@@ -18,8 +18,8 @@ for argI in range(1, len(sys.argv)):
 got_dict = {}
 
 
-def is_verbose():
-    return verbose > 0
+def get_verbosity():
+    return verbosity
 
 
 def write0(arg):
