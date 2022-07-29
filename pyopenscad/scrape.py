@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from pyopenscad import (
-    dump_value,
-    dump_values,
+    emit_py_value,
+    emit_py_values,
 )
 
 
@@ -29,7 +29,7 @@ def dump_comments(path):
                     if ((multiStartI < 0)
                             or (multiStartI > singleI)):
                         start = multiStartI + 2
-                        dump_value(line[singleI+2:].strip())
+                        emit_py_value(line[singleI+2:].strip())
                         continue
                 if multiStartI > -1:
                     keep = True  # Always keep the first line
@@ -56,7 +56,7 @@ def dump_comments(path):
                             return 1
                         continue
                     value = line[start:end].strip()
-                    dump_values(value, sign)
+                    emit_py_values(value, sign)
                     continue
                 else:
                     echo0("Warning: The line will be ignored"

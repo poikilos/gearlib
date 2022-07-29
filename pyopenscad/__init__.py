@@ -66,7 +66,7 @@ def string_to_key(sentence):
     # ^ keep ' '
 
 
-def dump_value(value, prefix="data['comments']['de']['", suffix="']"):
+def emit_py_value(value, prefix="data['comments']['de']['", suffix="']"):
     key = string_to_key(value)
     if len(key) == 0:
         echo0("Warning: \"{}\" has no alphanumeric characters"
@@ -82,7 +82,7 @@ def dump_value(value, prefix="data['comments']['de']['", suffix="']"):
           ''.format(prefix, key, suffix, value.replace("\"", "\\\"")))
 
 
-def dump_values(line, sign):
+def emit_py_values(line, sign):
     '''
     Sequential arguments:
     A line that may or may not contain multiple values, such as
@@ -90,11 +90,11 @@ def dump_values(line, sign):
     '''
     parts = line.split(", ")
     if len(parts) == 1:
-        dump_value(line)
+        emit_py_value(line)
         return
     for part in parts:
         signI = part.find(sign)
         if signI > -1:
-            dump_value(part[signI+len(sign):].strip())
+            emit_py_value(part[signI+len(sign):].strip())
         else:
-            dump_value(part.strip())
+            emit_py_value(part.strip())
