@@ -5,6 +5,7 @@ import re
 # import string
 import hashlib
 import pathlib
+import json
 
 MODULE_DIR = os.path.dirname(__file__)
 REPO_DIR = os.path.dirname(__file__)  # same as MODULE_DIR in this case
@@ -97,17 +98,20 @@ def _generate_meta(path, analyser, dest_dir, out_name=None):
         nameNoExt, dotExt = os.path.splitext(name)
         out_name = nameNoExt + ".tree.txt"
     dst_file = os.path.join(dest_dir, out_name)
+    echo0('* generating "{}"'.format(dst_file))
     [parsed, all_messages] = analyser.analyse_file(
         path,
         output_tree=dst_file,
     )
 
     # See main in sca2d/sca2d/__main__.py for an example:
-    print_messages(all_messages, args.file_or_dir_name, args.colour, args.debug)
+    color = None
+    debug = None
+    print_messages(all_messages, path, color, debug)
     message_summary = count_messages(all_messages)
     print(message_summary)
     with open("gl-code-quality-report.json", "w") as json_file:
-        json.dump(gitlab_summary(all_messages), json_file)
+        json.dump(gitlab_summary(all_messages), json_file, indent=2)
 
     # TODO: useful things here
     # print("cat <<END")
@@ -132,7 +136,7 @@ def generate_meta(in_path):
     # TODO: analyser = ScadAnalyser(SCAD_GRAM_PATH, verbose=verbose)
     analyser = Analyser(verbose=verbose)
     _generate_meta(
-        UPSTREAM_PATH,
+        in_path,
         analyser,
         dest_dir,
         # out_name="geardrive.scad",

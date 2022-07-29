@@ -137,7 +137,7 @@ Pitch Circle Diameter (PCD) is the circle where the widening part of the spur st
   (CC BY-NC-SA 4.0)
 - by janssen86 and Poikilos
 - based on [Getriebe Bibliothek für OpenSCAD / Gears Library for OpenSCAD](https://www.thingiverse.com/thing:1604369/files) by [janssen86](https://www.thingiverse.com/janssen86) June 16, 2016
-
+- scad.py: [GPL v3](license-analyzer.txt) based on [sca2d](https://gitlab.com/bath_open_instrumentation_group/sca2d).
 
 ## Summary
 [by janssen86; but only English is included in this branch's version]
