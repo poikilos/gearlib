@@ -2,17 +2,6 @@
 import setuptools
 import sys
 import os
-# - For the example on which this was based, see
-#   https://github.com/Hierosoft/hierosoft/blob/main/setup.py
-#   which is based on
-#   https://github.com/poikilos/linux-preinstall/blob/main/setup.py
-#   which is based on
-#   https://github.com/poikilos/world_clock/blob/main/setup.py
-#   which is based on
-#   https://github.com/poikilos/nopackage/blob/main/setup.py
-#   which is based on
-#   https://github.com/poikilos/pypicolcd/blob/master/setup.py
-# - For nose, see https://github.com/poikilos/mgep/blob/master/setup.py
 
 # python_mr = sys.version_info.major
 # versionedModule = {}
